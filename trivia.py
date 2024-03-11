@@ -32,7 +32,7 @@ class Game:
     def is_playable(self):
         return self.how_many_players >= 2
 
-    def add(self, player_name):
+    def add_player(self, player_name):
         new_player = Player(player_name)
         self.players.append(new_player)
         self.places[self.how_many_players] = 0
@@ -156,9 +156,9 @@ def play_game(seed):
     random.seed(seed)
     not_a_winner = False
     game = Game()
-    game.add('Chet')
-    game.add('Pat')
-    game.add('Sue')
+    game.add_player('Chet')
+    game.add_player('Pat')
+    game.add_player('Sue')
     while True:
         game.roll(randrange(5) + 1)
 
