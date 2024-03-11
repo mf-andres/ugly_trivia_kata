@@ -1,4 +1,5 @@
 from run_some_specific_games import run_games, save_outputs_to_file
+from trivia import Game
 
 
 def test_trivia_works_as_before():
@@ -16,3 +17,10 @@ def text_files_are_equal(file1_path, file2_path):
         content2 = file2.read()
 
     return content1 == content2
+
+
+def test_first_player_is_first_added_player():
+    game = Game()
+    game.add_player("player1")
+    game.add_player("player2")
+    assert game.current_player_object.name == "player1"

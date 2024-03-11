@@ -18,6 +18,7 @@ class Game:
         self.rock_questions = []
 
         self.current_player = 0
+        self.current_player_object = Player("NULL PLAYER")
         self.is_getting_out_of_penalty_box = False
 
         for i in range(50):
@@ -35,6 +36,7 @@ class Game:
     def add_player(self, player_name):
         new_player = Player(player_name)
         self.players.append(new_player)
+        self.current_player_object = self.players[0]  # first player is first added player
         self.places[self.how_many_players] = 0
         self.purses[self.how_many_players] = 0
         self.in_penalty_box[self.how_many_players] = False
@@ -49,7 +51,7 @@ class Game:
         return len(self.players)
 
     def roll(self, roll):
-        print("%s is the current player" % self.players[self.current_player].name)
+        print("%s is the current player" % self.current_player_object.name)
         print("They have rolled a %s" % roll)
 
         if self.in_penalty_box[self.current_player]:
@@ -110,13 +112,12 @@ class Game:
                       ' Gold Coins.')
 
                 winner = self._did_player_win()
-                self.current_player += 1
+                self.set_next_player()
                 if self.current_player == len(self.players): self.current_player = 0
 
                 return winner
             else:
-                self.current_player += 1
-                if self.current_player == len(self.players): self.current_player = 0
+                self.set_next_player()
                 return True
 
 
@@ -131,18 +132,20 @@ class Game:
                   ' Gold Coins.')
 
             winner = self._did_player_win()
-            self.current_player += 1
-            if self.current_player == len(self.players): self.current_player = 0
-
+            self.set_next_player()
             return winner
+
+    def set_next_player(self):
+        self.current_player += 1
+        if self.current_player == len(self.players):
+            self.current_player = 0
+        self.current_player_object = self.players[self.current_player]
 
     def wrong_answer(self):
         print('Question was incorrectly answered')
         print(self.players[self.current_player].name + " was sent to the penalty box")
         self.in_penalty_box[self.current_player] = True
-
-        self.current_player += 1
-        if self.current_player == len(self.players): self.current_player = 0
+        self.set_next_player()
         return True
 
     def _did_player_win(self):
