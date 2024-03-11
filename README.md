@@ -4,4 +4,5 @@
 4. The golden master can be based on running the program and checking it's output but the output is always different
 because of random values.
 5. We make a little safe refactor to extract method play_game and inject a seed.
-6. 
+6. Now we make a script to play some game with a collection of seeds, and we collect the output. 
+7. Then we make a test to run the same games and check if the output was the same.   
