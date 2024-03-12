@@ -24,3 +24,20 @@ def test_first_player_is_first_added_player():
     game.add_player("player1")
     game.add_player("player2")
     assert game.current_player_object.name == "player1"
+
+
+def test_when_player1_answers_is_player2_turn():
+    game = Game()
+    game.add_player("player1")
+    game.add_player("player2")
+    game.was_correctly_answered()
+    assert game.current_player_object.name == "player2"
+
+
+def test_when_player2_answers_is_player1_turn_again():
+    game = Game()
+    game.add_player("player1")
+    game.add_player("player2")
+    game.was_correctly_answered()  # player1
+    game.was_correctly_answered()  # player2
+    assert game.current_player_object.name == "player1"
