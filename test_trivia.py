@@ -41,3 +41,11 @@ def test_when_player2_answers_is_player1_turn_again():
     game.was_correctly_answered()  # player1
     game.was_correctly_answered()  # player2
     assert game.current_player_object.name == "player1"
+
+
+def test_when_gets_6_coins_it_wins_the_game():
+    game = Game()
+    game.add_player("player1")
+    game.add_player("player2")
+    game.current_player_object.coins = 6
+    assert game.current_player_object.has_won()

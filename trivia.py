@@ -104,15 +104,11 @@ class Game:
             if self.is_getting_out_of_penalty_box:
                 print('Answer was correct!!!!')
                 self.give_coin_to_current_player()
-
-                winner = self._did_player_win()
                 self.set_next_player()
-                if self.current_player == len(self.players): self.current_player = 0
-
-                return winner
+                return
             else:
                 self.set_next_player()
-                return True
+                return
 
 
 
@@ -120,10 +116,8 @@ class Game:
 
             print("Answer was corrent!!!!")
             self.give_coin_to_current_player()
-
-            winner = self._did_player_win()
             self.set_next_player()
-            return winner
+            return
 
     def give_coin_to_current_player(self):
         self.current_player_object.coins += 1
@@ -143,10 +137,10 @@ class Game:
         print(self.players[self.current_player].name + " was sent to the penalty box")
         self.in_penalty_box[self.current_player] = True
         self.set_next_player()
-        return True
+        return
 
-    def _did_player_win(self):
-        return not (self.current_player_object.coins == 6)
+    def has_anyone_won(self):
+        return any(player.has_won() for player in self.players)
 
 
 from random import randrange
@@ -154,7 +148,7 @@ from random import randrange
 
 def play_game(seed):
     random.seed(seed)
-    not_a_winner = False
+
     game = Game()
     game.add_player('Chet')
     game.add_player('Pat')
@@ -163,11 +157,12 @@ def play_game(seed):
         game.roll(randrange(5) + 1)
 
         if randrange(9) == 7:
-            not_a_winner = game.wrong_answer()
+            game.wrong_answer()
         else:
-            not_a_winner = game.was_correctly_answered()
+            game.was_correctly_answered()
 
-        if not not_a_winner: break
+        if game.has_anyone_won():
+            return
 
 
 if __name__ == '__main__':
