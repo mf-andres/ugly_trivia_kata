@@ -15,7 +15,6 @@ class Game:
 
         self.current_player = 0
         self.current_player_object = Player("NULL PLAYER")
-        self.is_getting_out_of_penalty_box = False
 
         for i in range(50):
             self.pop_questions.append("Pop Question %s" % i)
@@ -49,7 +48,7 @@ class Game:
 
         if self.current_player_object.is_in_penalty_box:
             if roll % 2 != 0:
-                self.is_getting_out_of_penalty_box = True
+                self.current_player_object.is_getting_out_of_penalty_box = True
 
                 print("%s is getting out of the penalty box" % self.players[self.current_player].name)
                 self.move_player(roll)
@@ -57,7 +56,7 @@ class Game:
                 self._ask_question()
             else:
                 print("%s is not getting out of the penalty box" % self.players[self.current_player].name)
-                self.is_getting_out_of_penalty_box = False
+                self.current_player_object.is_getting_out_of_penalty_box = False
         else:
             self.move_player(roll)
             print("The category is %s" % self._current_category)
@@ -92,7 +91,7 @@ class Game:
 
     def was_correctly_answered(self):
         if self.current_player_object.is_in_penalty_box:
-            if self.is_getting_out_of_penalty_box:
+            if self.current_player_object.is_getting_out_of_penalty_box:
                 print('Answer was correct!!!!')
                 self.give_coin_to_current_player()
                 self.set_next_player()

@@ -75,3 +75,13 @@ def test_when_player_answers_wrongly_it_goes_to_penalty_box():
     game.wrong_answer()
     first_player = game.players[0]
     assert first_player.is_in_penalty_box
+
+
+def test_when_player_in_penalty_box_rolls_odd_it_gets_out_of_the_penalty_box():
+    game = Game()
+    game.add_player("player1")
+    game.add_player("player2")
+    first_player = game.players[0]
+    first_player.is_in_penalty_box = True
+    game.roll(3)
+    assert first_player.is_getting_out_of_penalty_box
