@@ -8,7 +8,6 @@ from player import Player
 class Game:
     def __init__(self):
         self.players = []
-        self.places = [0] * 6
         self.in_penalty_box = [0] * 6
 
         self.pop_questions = []
@@ -36,7 +35,6 @@ class Game:
         new_player = Player(player_name)
         self.players.append(new_player)
         self.current_player_object = self.players[0]  # first player is first added player
-        self.places[self.how_many_players] = 0
         self.in_penalty_box[self.how_many_players] = False
 
         print(player_name + " was added")
@@ -57,28 +55,24 @@ class Game:
                 self.is_getting_out_of_penalty_box = True
 
                 print("%s is getting out of the penalty box" % self.players[self.current_player].name)
-                self.places[self.current_player] = self.places[self.current_player] + roll
-                if self.places[self.current_player] > 11:
-                    self.places[self.current_player] = self.places[self.current_player] - 12
-
-                print(self.players[self.current_player].name + \
-                      '\'s new location is ' + \
-                      str(self.places[self.current_player]))
+                self.move_player(roll)
                 print("The category is %s" % self._current_category)
                 self._ask_question()
             else:
                 print("%s is not getting out of the penalty box" % self.players[self.current_player].name)
                 self.is_getting_out_of_penalty_box = False
         else:
-            self.places[self.current_player] = self.places[self.current_player] + roll
-            if self.places[self.current_player] > 11:
-                self.places[self.current_player] = self.places[self.current_player] - 12
-
-            print(self.players[self.current_player].name + \
-                  '\'s new location is ' + \
-                  str(self.places[self.current_player]))
+            self.move_player(roll)
             print("The category is %s" % self._current_category)
             self._ask_question()
+
+    def move_player(self, roll):
+        self.current_player_object.place += roll
+        if self.current_player_object.place > 11:
+            self.current_player_object.place -= 12
+        print(self.current_player_object.name + \
+              '\'s new location is ' + \
+              str(self.current_player_object.place))
 
     def _ask_question(self):
         if self._current_category == 'Pop': print(self.pop_questions.pop(0))
@@ -88,15 +82,15 @@ class Game:
 
     @property
     def _current_category(self):
-        if self.places[self.current_player] == 0: return 'Pop'
-        if self.places[self.current_player] == 4: return 'Pop'
-        if self.places[self.current_player] == 8: return 'Pop'
-        if self.places[self.current_player] == 1: return 'Science'
-        if self.places[self.current_player] == 5: return 'Science'
-        if self.places[self.current_player] == 9: return 'Science'
-        if self.places[self.current_player] == 2: return 'Sports'
-        if self.places[self.current_player] == 6: return 'Sports'
-        if self.places[self.current_player] == 10: return 'Sports'
+        if self.current_player_object.place == 0: return 'Pop'
+        if self.current_player_object.place == 4: return 'Pop'
+        if self.current_player_object.place == 8: return 'Pop'
+        if self.current_player_object.place == 1: return 'Science'
+        if self.current_player_object.place == 5: return 'Science'
+        if self.current_player_object.place == 9: return 'Science'
+        if self.current_player_object.place == 2: return 'Sports'
+        if self.current_player_object.place == 6: return 'Sports'
+        if self.current_player_object.place == 10: return 'Sports'
         return 'Rock'
 
     def was_correctly_answered(self):

@@ -49,3 +49,13 @@ def test_when_gets_6_coins_it_wins_the_game():
     game.add_player("player2")
     game.current_player_object.coins = 6
     assert game.current_player_object.has_won()
+
+
+def test_when_player_rolls_it_moves_places():
+    game = Game()
+    game.add_player("player1")
+    game.add_player("player2")
+    game.roll(1)
+    assert game.current_player_object.place == 1
+
+# def test_when_player_rolls_it_moves_places():
