@@ -58,4 +58,11 @@ def test_when_player_rolls_it_moves_places():
     game.roll(1)
     assert game.current_player_object.place == 1
 
-# def test_when_player_rolls_it_moves_places():
+
+def test_when_player_rolls_it_moves_around():
+    game = Game()
+    game.add_player("player1")
+    game.add_player("player2")
+    game.current_player_object.place = 11
+    game.roll(1)
+    assert game.current_player_object.place == 0
