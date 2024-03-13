@@ -66,3 +66,12 @@ def test_when_player_rolls_it_moves_around():
     game.current_player_object.place = 11
     game.roll(1)
     assert game.current_player_object.place == 0
+
+
+def test_when_player_answers_wrongly_it_goes_to_penalty_box():
+    game = Game()
+    game.add_player("player1")
+    game.add_player("player2")
+    game.wrong_answer()
+    first_player = game.players[0]
+    assert first_player.is_in_penalty_box

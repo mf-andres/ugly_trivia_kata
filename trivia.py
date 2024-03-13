@@ -8,8 +8,6 @@ from player import Player
 class Game:
     def __init__(self):
         self.players = []
-        self.in_penalty_box = [0] * 6
-
         self.pop_questions = []
         self.science_questions = []
         self.sports_questions = []
@@ -35,7 +33,6 @@ class Game:
         new_player = Player(player_name)
         self.players.append(new_player)
         self.current_player_object = self.players[0]  # first player is first added player
-        self.in_penalty_box[self.how_many_players] = False
 
         print(player_name + " was added")
         print("They are player number %s" % len(self.players))
@@ -50,7 +47,7 @@ class Game:
         print("%s is the current player" % self.current_player_object.name)
         print("They have rolled a %s" % roll)
 
-        if self.in_penalty_box[self.current_player]:
+        if self.current_player_object.is_in_penalty_box:
             if roll % 2 != 0:
                 self.is_getting_out_of_penalty_box = True
 
@@ -94,7 +91,7 @@ class Game:
         return 'Rock'
 
     def was_correctly_answered(self):
-        if self.in_penalty_box[self.current_player]:
+        if self.current_player_object.is_in_penalty_box:
             if self.is_getting_out_of_penalty_box:
                 print('Answer was correct!!!!')
                 self.give_coin_to_current_player()
@@ -129,7 +126,7 @@ class Game:
     def wrong_answer(self):
         print('Question was incorrectly answered')
         print(self.players[self.current_player].name + " was sent to the penalty box")
-        self.in_penalty_box[self.current_player] = True
+        self.current_player_object.is_in_penalty_box = True
         self.set_next_player()
         return
 
