@@ -5,7 +5,7 @@ from trivia import Game
 
 
 @pytest.fixture
-def game():
+def game() -> Game:
     game_ = Game()
     game_.add_player("player1")
     game_.add_player("player2")

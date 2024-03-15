@@ -14,5 +14,5 @@ class Board:
         11: 'Rock',
     }
 
-    def get_category_at(self, place):
+    def get_category_at(self, place: int) -> str:
         return self.categories_by_place[place]

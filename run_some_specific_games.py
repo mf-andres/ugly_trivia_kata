@@ -1,7 +1,7 @@
 import subprocess
 
 
-def run_games(number_of_games):
+def run_games(number_of_games: int):
     outputs = list()
     for i in range(number_of_games):
         output = subprocess.check_output(['python', "trivia.py", f"{i}"], universal_newlines=True)
