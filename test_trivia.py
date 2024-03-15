@@ -1,5 +1,6 @@
 import pytest
 
+from errors import UnplayableGameError
 from run_some_specific_games import run_games, save_outputs_to_file
 from trivia import Game
 
@@ -77,3 +78,10 @@ def test_when_player_answers_correctly_it_gets_one_coin(game):
     first_player = game.players[0]
     game.handle_correct_answer()
     assert first_player.coins == 1
+
+
+def test_a_game_with_one_player_is_not_playable():
+    game = Game()
+    game.add_player("Chet")
+    with pytest.raises(UnplayableGameError):
+        game.play()

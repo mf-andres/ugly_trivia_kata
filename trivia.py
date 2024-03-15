@@ -4,6 +4,7 @@ import sys
 from random import randrange
 
 from board import Board
+from errors import UnplayableGameError
 from player import Player
 from questions import Questions
 
@@ -16,41 +17,47 @@ class Game:
         self.current_player = 0
         self.current_player_object = Player("NULL PLAYER")
 
-    def is_playable(self):
-        return self.how_many_players >= 2
-
     def add_player(self, player_name):
         new_player = Player(player_name)
         self.players.append(new_player)
         self.current_player_object = self.players[0]  # first player is first added player
-
         print(player_name + " was added")
         print("They are player number %s" % len(self.players))
+        return
 
-        return True
+    def play(self):
+        if self._is_not_playable():
+            raise UnplayableGameError()
+        while True:
+            self.handle_roll(self._d6_roll())
+            if self._player_answered_wrongly():
+                self.handle_wrong_answer()
+            else:
+                self.handle_correct_answer()
+            if self.has_ended():
+                return
 
-    @property
-    def how_many_players(self):
-        return len(self.players)
+    def _is_not_playable(self):
+        return len(self.players) < 2
+
+    @staticmethod
+    def _d6_roll():
+        return randrange(1, 6)
+
+    @staticmethod
+    def _player_answered_wrongly():
+        return randrange(9) == 7
 
     def handle_roll(self, roll):
         print("%s is the current player" % self.current_player_object.name)
         print("They have rolled a %s" % roll)
-
         if self.current_player_object.is_in_penalty_box and not self._roll_is_odd(roll):
             self._deny_player_from_leaving_the_penalty_box()
             return
-
         if self.current_player_object.is_in_penalty_box and self._roll_is_odd(roll):
             self._allow_player_to_leave_the_penalty_box()
-
         self._move_player(roll)
         self._ask_question()
-
-    def _ask_question(self):
-        current_player_place = self.current_player_object.place
-        current_category = self.board.get_category_at(current_player_place)
-        self.questions.ask_question(current_category)
 
     def _deny_player_from_leaving_the_penalty_box(self):
         print("%s is not getting out of the penalty box" % self.current_player_object.name)
@@ -59,6 +66,11 @@ class Game:
     def _allow_player_to_leave_the_penalty_box(self):
         self.current_player_object.is_getting_out_of_penalty_box = True
         print("%s is getting out of the penalty box" % self.current_player_object.name)
+
+    def _ask_question(self):
+        current_player_place = self.current_player_object.place
+        current_category = self.board.get_category_at(current_player_place)
+        self.questions.ask_question(current_category)
 
     @staticmethod
     def _roll_is_odd(roll):
@@ -106,30 +118,9 @@ class Game:
     def has_ended(self):
         return any(player.has_won() for player in self.players)
 
-    def play(self):
-        while True:
-            self.handle_roll(self.d6_roll())
-
-            if self.player_answered_wrongly():
-                self.handle_wrong_answer()
-            else:
-                self.handle_correct_answer()
-
-            if self.has_ended():
-                return
-
-    @staticmethod
-    def player_answered_wrongly():
-        return randrange(9) == 7
-
-    @staticmethod
-    def d6_roll():
-        return randrange(1, 6)
-
 
 def play_game(seed):
     random.seed(seed)
-
     game = Game()
     game.add_player('Chet')
     game.add_player('Pat')
