@@ -2,6 +2,7 @@
 import random
 import sys
 
+from board import Board
 from player import Player
 from questions import Questions
 
@@ -10,6 +11,7 @@ class Game:
     def __init__(self):
         self.players = []
         self.questions = Questions()
+        self.board = Board()
         self.current_player = 0
         self.current_player_object = Player("NULL PLAYER")
 
@@ -38,12 +40,17 @@ class Game:
             if self._roll_is_odd(roll):
                 self._allow_player_to_leave_the_penalty_box()
                 self._move_player(roll)
-                self.questions.ask_question(self._current_category)
+                self._ask_question()
             else:
                 self.deny_player_to_leave_the_penalty_box()
         else:
             self._move_player(roll)
-            self.questions.ask_question(self._current_category)
+            self._ask_question()
+
+    def _ask_question(self):
+        current_player_place = self.current_player_object.place
+        current_category = self.board.get_category_at(current_player_place)
+        self.questions.ask_question(current_category)
 
     def deny_player_to_leave_the_penalty_box(self):
         print("%s is not getting out of the penalty box" % self.current_player_object.name)
@@ -62,19 +69,6 @@ class Game:
         if self.current_player_object.place > 11:
             self.current_player_object.place -= 12
         print(f"{self.current_player_object.name}'s new location is {self.current_player_object.place}")
-
-    @property
-    def _current_category(self):
-        if self.current_player_object.place == 0: return 'Pop'
-        if self.current_player_object.place == 4: return 'Pop'
-        if self.current_player_object.place == 8: return 'Pop'
-        if self.current_player_object.place == 1: return 'Science'
-        if self.current_player_object.place == 5: return 'Science'
-        if self.current_player_object.place == 9: return 'Science'
-        if self.current_player_object.place == 2: return 'Sports'
-        if self.current_player_object.place == 6: return 'Sports'
-        if self.current_player_object.place == 10: return 'Sports'
-        return 'Rock'
 
     def was_correctly_answered(self):
         if self.current_player_object.is_in_penalty_box:
