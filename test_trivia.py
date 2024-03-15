@@ -1,7 +1,6 @@
 import pytest
 
 from errors import UnplayableGameError
-from run_some_specific_games import run_games, save_outputs_to_file
 from trivia import Game
 
 
@@ -11,23 +10,6 @@ def game():
     game_.add_player("player1")
     game_.add_player("player2")
     return game_
-
-
-def test_trivia_works_as_before():
-    number_of_games = 100  # check that this number is equal in run_some_specific_games.py
-    outputs = run_games(number_of_games)
-    save_outputs_to_file(outputs, 'test_output.txt')
-    assert text_files_are_equal("output.txt", "test_output.txt")
-
-
-def text_files_are_equal(file1_path, file2_path):
-    with open(file1_path, 'r') as file1:
-        content1 = file1.read()
-
-    with open(file2_path, 'r') as file2:
-        content2 = file2.read()
-
-    return content1 == content2
 
 
 def test_first_player_is_first_added_player(game):
@@ -71,7 +53,7 @@ def test_when_player_in_penalty_box_rolls_odd_it_gets_out_of_the_penalty_box(gam
     first_player = game.players[0]
     first_player.is_in_penalty_box = True
     game.handle_roll(3)
-    assert first_player.is_getting_out_of_penalty_box
+    assert not first_player.is_in_penalty_box
 
 
 def test_when_player_answers_correctly_it_gets_one_coin(game):
@@ -85,3 +67,17 @@ def test_a_game_with_one_player_is_not_playable():
     game.add_player("Chet")
     with pytest.raises(UnplayableGameError):
         game.play()
+
+
+def test_a_player_in_the_penalty_box_skips_turn_so_no_questions_are_asked(game):
+    # given a game with a player in the penalty box who is going to roll even
+    first_player = game.players[0]
+    first_player.is_in_penalty_box = True
+    previous_number_of_questions = game.questions.left()
+
+    # when he plays a turn
+    game.play_turn(roll_fn=lambda: 2)
+
+    # he is skipped so no questions are asked
+    current_number_of_questions = game.questions.left()
+    assert previous_number_of_questions == current_number_of_questions

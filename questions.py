@@ -27,3 +27,11 @@ class Questions:
             print(self.sports_questions.pop(0))
         if category == 'Rock':
             print(self.rock_questions.pop(0))
+
+    def left(self):
+        return (
+                len(self.pop_questions)
+                + len(self.rock_questions)
+                + len(self.science_questions)
+                + len(self.pop_questions)
+        )
