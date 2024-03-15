@@ -4,10 +4,10 @@ import sys
 from random import randrange
 from typing import List
 
-from board import Board
-from errors import UnplayableGameError
-from player import Player
-from questions import Questions
+from trivia.board import Board
+from trivia.errors import UnplayableGameError
+from trivia.player import Player
+from trivia.questions import Questions
 
 
 class Game:
@@ -30,7 +30,9 @@ class Game:
         if self._is_not_playable():
             raise UnplayableGameError()
         while True:
-            self.play_turn(self._d6_roll())
+            self.play_turn(self._d6_roll)
+            if self.player_has_won():
+                break
 
     def play_turn(self, roll_fn):
         self.handle_roll(roll_fn())
@@ -45,8 +47,6 @@ class Game:
             self.handle_wrong_answer()
         else:
             self.handle_correct_answer()
-        if self.has_ended():
-            return
 
     def _is_not_playable(self) -> bool:
         return len(self.players) < 2
@@ -114,7 +114,7 @@ class Game:
         self.set_next_player()
         return
 
-    def has_ended(self) -> bool:
+    def player_has_won(self) -> bool:
         return any(player.has_won() for player in self.players)
 
 

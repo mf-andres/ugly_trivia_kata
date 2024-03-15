@@ -1,7 +1,7 @@
 import pytest
 
-from errors import UnplayableGameError
-from trivia import Game
+from trivia.errors import UnplayableGameError
+from trivia.trivia import Game
 
 
 @pytest.fixture
