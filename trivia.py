@@ -3,27 +3,15 @@ import random
 import sys
 
 from player import Player
+from questions import Questions
 
 
 class Game:
     def __init__(self):
         self.players = []
-        self.pop_questions = []
-        self.science_questions = []
-        self.sports_questions = []
-        self.rock_questions = []
-
+        self.questions = Questions()
         self.current_player = 0
         self.current_player_object = Player("NULL PLAYER")
-
-        for i in range(50):
-            self.pop_questions.append("Pop Question %s" % i)
-            self.science_questions.append("Science Question %s" % i)
-            self.sports_questions.append("Sports Question %s" % i)
-            self.rock_questions.append(self.create_rock_question(i))
-
-    def create_rock_question(self, index):
-        return "Rock Question %s" % index
 
     def is_playable(self):
         return self.how_many_players >= 2
@@ -47,15 +35,15 @@ class Game:
         print("They have rolled a %s" % roll)
 
         if self.current_player_object.is_in_penalty_box:
-            if self.roll_is_odd(roll):
+            if self._roll_is_odd(roll):
                 self._allow_player_to_leave_the_penalty_box()
                 self._move_player(roll)
-                self._ask_question()
+                self.questions.ask_question(self._current_category)
             else:
                 self.deny_player_to_leave_the_penalty_box()
         else:
             self._move_player(roll)
-            self._ask_question()
+            self.questions.ask_question(self._current_category)
 
     def deny_player_to_leave_the_penalty_box(self):
         print("%s is not getting out of the penalty box" % self.current_player_object.name)
@@ -66,7 +54,7 @@ class Game:
         print("%s is getting out of the penalty box" % self.current_player_object.name)
 
     @staticmethod
-    def roll_is_odd(roll):
+    def _roll_is_odd(roll):
         return roll % 2 != 0
 
     def _move_player(self, roll):
@@ -74,13 +62,6 @@ class Game:
         if self.current_player_object.place > 11:
             self.current_player_object.place -= 12
         print(f"{self.current_player_object.name}'s new location is {self.current_player_object.place}")
-
-    def _ask_question(self):
-        print("The category is %s" % self._current_category)
-        if self._current_category == 'Pop': print(self.pop_questions.pop(0))
-        if self._current_category == 'Science': print(self.science_questions.pop(0))
-        if self._current_category == 'Sports': print(self.sports_questions.pop(0))
-        if self._current_category == 'Rock': print(self.rock_questions.pop(0))
 
     @property
     def _current_category(self):
