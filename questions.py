@@ -8,14 +8,14 @@ class Questions:
 
     def init_questions(self):
         for i in range(50):
-            self.pop_questions.append("Pop Question %s" % i)
-            self.science_questions.append("Science Question %s" % i)
-            self.sports_questions.append("Sports Question %s" % i)
-            self.rock_questions.append(self.create_rock_question(i))
+            self.pop_questions.append(self.create_question("Pop", i))
+            self.science_questions.append(self.create_question("Science", i))
+            self.sports_questions.append(self.create_question("Sports", i))
+            self.rock_questions.append(self.create_question("Rock", i))
 
     @staticmethod
-    def create_rock_question(index):
-        return "Rock Question %s" % index
+    def create_question(category, index):
+        return f"{category} Question {index}"
 
     def ask_question(self, category):
         print("The category is %s" % category)
