@@ -47,30 +47,36 @@ class Game:
         print("They have rolled a %s" % roll)
 
         if self.current_player_object.is_in_penalty_box:
-            if roll % 2 != 0:
-                self.current_player_object.is_getting_out_of_penalty_box = True
-
-                print("%s is getting out of the penalty box" % self.players[self.current_player].name)
-                self.move_player(roll)
-                print("The category is %s" % self._current_category)
+            if self.roll_is_odd(roll):
+                self._allow_player_to_leave_the_penalty_box()
+                self._move_player(roll)
                 self._ask_question()
             else:
-                print("%s is not getting out of the penalty box" % self.players[self.current_player].name)
-                self.current_player_object.is_getting_out_of_penalty_box = False
+                self.deny_player_to_leave_the_penalty_box()
         else:
-            self.move_player(roll)
-            print("The category is %s" % self._current_category)
+            self._move_player(roll)
             self._ask_question()
 
-    def move_player(self, roll):
+    def deny_player_to_leave_the_penalty_box(self):
+        print("%s is not getting out of the penalty box" % self.current_player_object.name)
+        self.current_player_object.is_getting_out_of_penalty_box = False
+
+    def _allow_player_to_leave_the_penalty_box(self):
+        self.current_player_object.is_getting_out_of_penalty_box = True
+        print("%s is getting out of the penalty box" % self.current_player_object.name)
+
+    @staticmethod
+    def roll_is_odd(roll):
+        return roll % 2 != 0
+
+    def _move_player(self, roll):
         self.current_player_object.place += roll
         if self.current_player_object.place > 11:
             self.current_player_object.place -= 12
-        print(self.current_player_object.name + \
-              '\'s new location is ' + \
-              str(self.current_player_object.place))
+        print(f"{self.current_player_object.name}'s new location is {self.current_player_object.place}")
 
     def _ask_question(self):
+        print("The category is %s" % self._current_category)
         if self._current_category == 'Pop': print(self.pop_questions.pop(0))
         if self._current_category == 'Science': print(self.science_questions.pop(0))
         if self._current_category == 'Sports': print(self.sports_questions.pop(0))
@@ -99,11 +105,7 @@ class Game:
             else:
                 self.set_next_player()
                 return
-
-
-
         else:
-
             print("Answer was corrent!!!!")
             self.give_coin_to_current_player()
             self.set_next_player()
@@ -111,10 +113,7 @@ class Game:
 
     def give_coin_to_current_player(self):
         self.current_player_object.coins += 1
-        print(self.current_player_object.name + \
-              ' now has ' + \
-              str(self.current_player_object.coins) + \
-              ' Gold Coins.')
+        print(f"{self.current_player_object.name} now has {self.current_player_object.coins} Gold Coins.")
 
     def set_next_player(self):
         self.current_player += 1
@@ -124,7 +123,7 @@ class Game:
 
     def wrong_answer(self):
         print('Question was incorrectly answered')
-        print(self.players[self.current_player].name + " was sent to the penalty box")
+        print(self.current_player_object.name + " was sent to the penalty box")
         self.current_player_object.is_in_penalty_box = True
         self.set_next_player()
         return
@@ -144,7 +143,7 @@ def play_game(seed):
     game.add_player('Pat')
     game.add_player('Sue')
     while True:
-        game.roll(randrange(5) + 1)
+        game.roll(randrange(1, 6))
 
         if randrange(9) == 7:
             game.wrong_answer()
