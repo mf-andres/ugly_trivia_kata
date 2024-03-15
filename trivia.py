@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import random
 import sys
+from random import randrange
 
 from board import Board
 from player import Player
@@ -32,7 +33,7 @@ class Game:
     def how_many_players(self):
         return len(self.players)
 
-    def roll(self, roll):
+    def handle_roll(self, roll):
         print("%s is the current player" % self.current_player_object.name)
         print("They have rolled a %s" % roll)
 
@@ -70,7 +71,7 @@ class Game:
             self.current_player_object.place -= 12
         print(f"{self.current_player_object.name}'s new location is {self.current_player_object.place}")
 
-    def was_correctly_answered(self):
+    def handle_correct_answer(self):
         if self.current_player_object.is_in_penalty_box:
             if self.current_player_object.is_getting_out_of_penalty_box:
                 print('Answer was correct!!!!')
@@ -96,18 +97,15 @@ class Game:
             self.current_player = 0
         self.current_player_object = self.players[self.current_player]
 
-    def wrong_answer(self):
+    def handle_wrong_answer(self):
         print('Question was incorrectly answered')
         print(self.current_player_object.name + " was sent to the penalty box")
         self.current_player_object.is_in_penalty_box = True
         self.set_next_player()
         return
 
-    def has_anyone_won(self):
+    def has_ended(self):
         return any(player.has_won() for player in self.players)
-
-
-from random import randrange
 
 
 def play_game(seed):
@@ -118,21 +116,31 @@ def play_game(seed):
     game.add_player('Pat')
     game.add_player('Sue')
     while True:
-        game.roll(randrange(1, 6))
+        game.handle_roll(d6_roll())
 
-        if randrange(9) == 7:
-            game.wrong_answer()
+        if player_answered_wrongly():
+            game.handle_wrong_answer()
         else:
-            game.was_correctly_answered()
+            game.handle_correct_answer()
 
-        if game.has_anyone_won():
+        if game.has_ended():
             return
 
 
+def player_answered_wrongly():
+    return randrange(9) == 7
+
+
+def d6_roll():
+    return randrange(1, 6)
+
+
 if __name__ == '__main__':
+    # if wrong params, exit
     if len(sys.argv) != 2:
         print("Missing args")
         print("python trivia.py seed")
         sys.exit()
+    # take params
     seed = sys.argv[1]
     play_game(seed)

@@ -30,7 +30,7 @@ def test_when_player1_answers_is_player2_turn():
     game = Game()
     game.add_player("player1")
     game.add_player("player2")
-    game.was_correctly_answered()
+    game.handle_correct_answer()
     assert game.current_player_object.name == "player2"
 
 
@@ -38,8 +38,8 @@ def test_when_player2_answers_is_player1_turn_again():
     game = Game()
     game.add_player("player1")
     game.add_player("player2")
-    game.was_correctly_answered()  # player1
-    game.was_correctly_answered()  # player2
+    game.handle_correct_answer()  # player1
+    game.handle_correct_answer()  # player2
     assert game.current_player_object.name == "player1"
 
 
@@ -55,7 +55,7 @@ def test_when_player_rolls_it_moves_places():
     game = Game()
     game.add_player("player1")
     game.add_player("player2")
-    game.roll(1)
+    game.handle_roll(1)
     assert game.current_player_object.place == 1
 
 
@@ -64,7 +64,7 @@ def test_when_player_rolls_it_moves_around():
     game.add_player("player1")
     game.add_player("player2")
     game.current_player_object.place = 11
-    game.roll(1)
+    game.handle_roll(1)
     assert game.current_player_object.place == 0
 
 
@@ -72,7 +72,7 @@ def test_when_player_answers_wrongly_it_goes_to_penalty_box():
     game = Game()
     game.add_player("player1")
     game.add_player("player2")
-    game.wrong_answer()
+    game.handle_wrong_answer()
     first_player = game.players[0]
     assert first_player.is_in_penalty_box
 
@@ -83,5 +83,5 @@ def test_when_player_in_penalty_box_rolls_odd_it_gets_out_of_the_penalty_box():
     game.add_player("player2")
     first_player = game.players[0]
     first_player.is_in_penalty_box = True
-    game.roll(3)
+    game.handle_roll(3)
     assert first_player.is_getting_out_of_penalty_box
